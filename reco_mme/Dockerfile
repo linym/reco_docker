@@ -2,7 +2,7 @@ FROM ubuntu:16.04
 MAINTAINER universeking rexlin2012001@gmail.com
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y sudo git wget vim lsb
+RUN apt-get install -y sudo git wget vim net-tools iputils-ping lsb
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install wireshark phpmyadmin
 
 RUN git clone https://github.com/RECONet/RECO

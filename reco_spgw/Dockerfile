@@ -2,7 +2,7 @@
 FROM ubuntu:16.04
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y sudo git wget vim iptables lsb
+RUN apt-get install -y sudo git wget vim net-tools iputils-ping iptables lsb kmod 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install wireshark
 RUN DEBIAN_FRONTEND=noninteractive apt-get -yq install phpmyadmin
 
@@ -25,8 +25,6 @@ RUN sed -i 's/PGW_INTERFACE_NAME_FOR_SGI            = "eth3";/PGW_INTERFACE_NAME
 RUN sed -i 's/SGW_INTERFACE_NAME_FOR_S11              = "lo";/SGW_INTERFACE_NAME_FOR_S11              = "eth0";/g' /usr/local/etc/oai/spgw.conf
 RUN sed -i 's/SGW_IPV4_ADDRESS_FOR_S11                = "127.0.11.2\/8";/SGW_IPV4_ADDRESS_FOR_S11                = "192.188.2.5\/24";/g' /usr/local/etc/oai/spgw.conf
 RUN sed -i 's/SGW_IPV4_ADDRESS_FOR_S1U_S12_S4_UP      = "192.168.11.17\/24";/SGW_IPV4_ADDRESS_FOR_S1U_S12_S4_UP      = "192.188.2.5\/24";/g' /usr/local/etc/oai/spgw.conf
-
-RUN apt-get install -y kmod
 
 #fix spgw bugs which must restart spgw
 RUN echo "#!/bin/bash" > spgw.sh

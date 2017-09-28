@@ -3,7 +3,7 @@ FROM ubuntu:16.04
 MAINTAINER universeking rexlin2012001@gmail.com
 
 RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y sudo git wget php libapache2-mod-php vim lsb
+RUN apt-get install -y sudo git wget php libapache2-mod-php vim net-tools iputils-ping lsb
 
 #install mysql without interaction 
 RUN echo "mysql-server mysql-server/root_password password 123" | debconf-set-selections
