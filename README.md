@@ -30,26 +30,26 @@ $ sudo docker run --privileged -v /lib/modules:/lib/modules --ip=192.188.2.5 --n
 --------------------------------------
 If you want to manually set the configuration files or connect to real eNodeB, following the below instructions.
 
-Step 1. Run the docker image in bash.
-$ sudo docker run -it --net=none -h ubuntu --cap-add all universeking/reco_hss /bin/bash
-$ sudo docker run -it --net=none -h ubuntu --privileged universeking/reco_mme /bin/bash
+Step 1. Run the docker image in bash.  
+$ sudo docker run -it --net=none -h ubuntu --cap-add all universeking/reco_hss /bin/bash  
+$ sudo docker run -it --net=none -h ubuntu --privileged universeking/reco_mme /bin/bash  
 $ sudo docker run -it --net=none -h ubuntu --privileged -v /lib/modules:/lib/modules universeking/reco_spgw /bin/bash
 
-Step 2. Create virtual network interface for intercommunication. The nic which is connecting to eNodeB should replace [NIC]. (eg. eth1)
-$ sudo ip link add vlan_hss link [NIC] type macvtap mode bridge
-$ sudo ip link add vlan_mme link [NIC] type macvtap mode bridge
+Step 2. Create virtual network interface for intercommunication. The nic which is connecting to eNodeB should replace [NIC]. (eg. eth1)  
+$ sudo ip link add vlan_hss link [NIC] type macvtap mode bridge  
+$ sudo ip link add vlan_mme link [NIC] type macvtap mode bridge  
 $ sudo ip link add vlan_spgw link [NIC] type macvtap mode bridge
 
-Step 3. Create virtual network interface for Internet in spgw. The nic which is connecting to Internet should replace [NIC]. (eg. eth2)
+Step 3. Create virtual network interface for Internet in spgw. The nic which is connecting to Internet should replace [NIC]. (eg. eth2)  
 $ sudo ip link add vlan_internet link enp5s0 type macvtap mode bridge
 
-Step 4. Bind the created virtual interface into container.
-$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(docker ps | awk '{if ($2 == "universeking/reco_hss") print $1;}')) vlan_hss
-$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(docker ps | awk '{if ($2 == "universeking/reco_mme") print $1;}')) vlan_mme
-$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(docker ps | awk '{if ($2 == "universeking/reco_spgw") print $1;}')) vlan_spgw
+Step 4. Bind the created virtual interface into container.  
+$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(docker ps | awk '{if ($2 == "universeking/reco_hss") print $1;}')) vlan_hss  
+$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(docker ps | awk '{if ($2 == "universeking/reco_mme") print $1;}')) vlan_mme  
+$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(docker ps | awk '{if ($2 == "universeking/reco_spgw") print $1;}')) vlan_spgw  
 $ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(docker ps | awk '{if ($2 == "universeking/reco_spgw") print $1;}')) vlan_internet
 
 Step 5. Run the starting script in each container. Note that HSS must start before MME.
-## sh hss.sh 
-## sh mme.sh 
-## sh spgw.sh 
+\#  sh hss.sh  
+\#  sh mme.sh  
+\#  sh spgw.sh 
