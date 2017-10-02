@@ -35,6 +35,8 @@ RUN echo "kill -INT \$(pgrep spgw)" >> spgw.sh
 RUN echo "sleep 2" >> spgw.sh
 RUN echo "/RECO/SCRIPTS/run_spgw" >> spgw.sh
 
+
 CMD ["sh", "spgw.sh"]
+
 
 

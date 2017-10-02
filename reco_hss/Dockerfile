@@ -19,20 +19,23 @@ RUN cp /RECO/ETC/hss.conf /usr/local/etc/oai && chmod 777 /usr/local/etc/oai/hss
 #setting mysql password here
 RUN sed -i 's/@MYSQL_user@/root/g' /usr/local/etc/oai/hss.conf
 RUN sed -i 's/@MYSQL_pass@/123/g' /usr/local/etc/oai/hss.conf
+RUN sed -i 's/OPERATOR_key = "1006020f0a478bf6b699f15c062e42b3";/#OPERATOR_key = "1006020f0a478bf6b699f15c062e42b3";/g' /usr/local/etc/oai/hss.conf
+RUN sed -i 's/#OPERATOR_key = "11111111111111111111111111111111";/OPERATOR_key = "11111111111111111111111111111111";/g' /usr/local/etc/oai/hss.conf
 RUN cp /RECO/ETC/hss_fd.conf /usr/local/etc/oai/freeDiameter && chmod 777 /usr/local/etc/oai/freeDiameter/hss_fd.conf
 RUN cp /RECO/ETC/acl.conf /usr/local/etc/oai/freeDiameter  && chmod 777 /usr/local/etc/oai/freeDiameter/acl.conf
 RUN echo "ubuntu" > hostname && cp hostname /etc/hostname 
 RUN echo "127.0.1.1 ubuntu.openair4G.eur ubuntu" >> /etc/hosts && echo "127.0.0.1 hss.openair4G.eur hss" >> /etc/hosts
 
 #import database
-RUN service mysql restart && mysql -u root -p123 -e "CREATE DATABASE oai_db;" && mysql -u root -p123 oai_db < /RECO/SRC/OAI_HSS/db/oai_db.sql && mysql -u root -p123 -e "USE oai_db;UPDATE mmeidentity SET mmehost = 'ubuntu.openair4G.eur' WHERE idmmeidentity = '4';"
+RUN chown -R mysql:mysql /var/lib/mysql && service mysql restart && mysql -u root -p123 -e "CREATE DATABASE oai_db;" && mysql -u root -p123 oai_db < /RECO/SRC/OAI_HSS/db/oai_db.sql && mysql -u root -p123 -e "USE oai_db;UPDATE mmeidentity SET mmehost = 'ubuntu.openair4G.eur' WHERE idmmeidentity = '4';"
 
 #build
 RUN /RECO/SCRIPTS/build_hss -c
 
-#copy starting shell
+#starting script
 RUN echo "#!/bin/bash" > hss.sh
 RUN echo "/RECO/SCRIPTS/check_hss_s6a_certificate /usr/local/etc/oai/freeDiameter/ hss.openair4G.eur" >> hss.sh
+RUN echo "chown -R mysql:mysql /var/lib/mysql" >> hss.sh
 RUN echo "service mysql restart" >> hss.sh
 RUN echo "/RECO/SCRIPTS/run_hss" >> hss.sh
 
