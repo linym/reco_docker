@@ -51,7 +51,7 @@ $ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docke
 $ sed -i 's/PGW_INTERFACE_NAME_FOR_SGI            = "eth0";/PGW_INTERFACE_NAME_FOR_SGI            = "eth1";/g' /usr/local/etc/oai/spgw.conf  
 
 Note that if you use different name with eth0 and eth1, configuration file must be modified.  
-$ sed -i 's/MME_INTERFACE_NAME_FOR_S1_MME[ \t]*=[ \t]*"eth0";/MME_INTERFACE_NAME_FOR_S1_MME         = "[Your NIC]";/g' /usr/local/etc/oai/mme.conf  
+$ sed -i 's/MME_INTERFACE_NAME_FOR_S1_MME[ \t]\*=[ \t]*"eth0";/MME_INTERFACE_NAME_FOR_S1_MME         = "[Your NIC]";/g' /usr/local/etc/oai/mme.conf  
 $ sed -i 's/MME_INTERFACE_NAME_FOR_S11_MME[ \t]*=[ \t]*"eth0";/MME_INTERFACE_NAME_FOR_S11_MME        = "[Your NIC]";/g' /usr/local/etc/oai/mme.conf  
 $ sed -i 's/PGW_INTERFACE_NAME_FOR_SGI[ \t]*=[ \t]*"eth0";/PGW_INTERFACE_NAME_FOR_SGI            = "[Your NIC]";/g' /usr/local/etc/oai/spgw.conf  
 $ sed -i 's/SGW_INTERFACE_NAME_FOR_S11[ \t]*=[ \t]*"eth0";/SGW_INTERFACE_NAME_FOR_S11              = "[Your NIC]";/g' /usr/local/etc/oai/spgw.conf  
