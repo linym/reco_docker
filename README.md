@@ -37,17 +37,17 @@ $ sudo docker run -it --net=none -h ubuntu --privileged -v /lib/modules:/lib/mod
 
 Step 2. Create virtual network interface for intercommunication and bind the created virtual interface into container. The nic which is connecting to eNodeB should replace [NIC]. (eg. eth0)  
 $ sudo ip link add eth0 link [NIC] type macvtap mode bridge  
-$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(docker ps | awk '{if ($2 == "universeking/reco_hss") print $1;}')) eth0  
+$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_hss") print $1;}')) eth0  
 
 $ sudo ip link add eth0 link [NIC] type macvtap mode bridge  
-$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(docker ps | awk '{if ($2 == "universeking/reco_mme") print $1;}')) eth0  
+$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_mme") print $1;}')) eth0  
 
 $ sudo ip link add eth0 link [NIC] type macvtap mode bridge  
-$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(docker ps | awk '{if ($2 == "universeking/reco_spgw") print $1;}')) eth0  
+$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_spgw") print $1;}')) eth0  
 
 Step 3. Create virtual network interface for Internet in spgw. The nic which is connecting to Internet should replace [NIC]. (eg. eth1)  
 $ sudo ip link add eth1 link [NIC] type macvtap mode bridge  
-$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(docker ps | awk '{if ($2 == "universeking/reco_spgw") print $1;}')) eth1  
+$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_spgw") print $1;}')) eth1  
 
 Note that if you use different name with eth0 and eth1, configuration file must be modified.  
 
