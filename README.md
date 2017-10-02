@@ -35,7 +35,7 @@ $ sudo docker run -it --net=none -h ubuntu --cap-add all universeking/reco_hss /
 $ sudo docker run -it --net=none -h ubuntu --privileged universeking/reco_mme /bin/bash  
 $ sudo docker run -it --net=none -h ubuntu --privileged -v /lib/modules:/lib/modules universeking/reco_spgw /bin/bash  
 
-Step 2. Create virtual network interface for intercommunication and bind the created virtual interface into container. The nic which is connecting to eNodeB should replace [NIC]. (eg. eth0)  
+Step 2. Create virtual network interface for intercommunication and bind the created virtual interface into container. The nic which is connecting to eNodeB should replace [NIC]. (eg. enp3s0)  
 $ sudo ip link add eth0 link [NIC] type macvtap mode bridge  
 $ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_hss") print $1;}')) eth0  
 
@@ -45,11 +45,17 @@ $ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docke
 $ sudo ip link add eth0 link [NIC] type macvtap mode bridge  
 $ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_spgw") print $1;}')) eth0  
 
-Step 3. Create virtual network interface for Internet in spgw. The nic which is connecting to Internet should replace [NIC]. (eg. eth1)  
+Step 3. Create virtual network interface for Internet in spgw. The nic which is connecting to Internet should replace [NIC]. (eg. enp5s0)  
 $ sudo ip link add eth1 link [NIC] type macvtap mode bridge  
 $ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_spgw") print $1;}')) eth1  
+$ sed -i 's/PGW_INTERFACE_NAME_FOR_SGI            = "eth0";/PGW_INTERFACE_NAME_FOR_SGI            = "eth1";/g' /usr/local/etc/oai/spgw.conf  
 
 Note that if you use different name with eth0 and eth1, configuration file must be modified.  
+$ sed -i 's/MME_INTERFACE_NAME_FOR_S1_MME         = "eth0";/MME_INTERFACE_NAME_FOR_S1_MME         = "[Your NIC]";/g' /usr/local/etc/oai/mme.conf  
+$ sed -i 's/MME_INTERFACE_NAME_FOR_S11_MME        = "eth0";/MME_INTERFACE_NAME_FOR_S11_MME        = "[Your NIC]";/g' /usr/local/etc/oai/mme.conf  
+$ sed -i 's/PGW_INTERFACE_NAME_FOR_SGI            = "eth0";/PGW_INTERFACE_NAME_FOR_SGI            = "[Your NIC]";/g' /usr/local/etc/oai/spgw.conf
+$ sed -i 's/SGW_INTERFACE_NAME_FOR_S11              = "eth0";/SGW_INTERFACE_NAME_FOR_S11              = "[Your NIC]";/g' /usr/local/etc/oai/spgw.conf
+
 
 Step 4. Activate the virtual nics in each container. Set the ip address then run the starting script. Note that HSS must start before MME.  
 //hss  
@@ -63,4 +69,6 @@ Step 4. Activate the virtual nics in each container. Set the ip address then run
 //hss  
 \#  ip link set eth0 up  
 \#  ifconfig eth0 192.188.2.4  
+\#  ip link set eth1 up  
+\#  ifconfig eth0 [IP address to Internet]  
 \#  sh hss.sh  
