@@ -19,12 +19,12 @@ RUN cp /RECO/ETC/spgw.conf /usr/local/etc/oai && chmod 777 /usr/local/etc/oai/sp
 RUN /RECO/SCRIPTS/build_spgw -c
 
 #config spgw
-RUN sed -i 's/PGW_MASQUERADE_SGI                    = "no";/PGW_MASQUERADE_SGI                    = "yes";/g' /usr/local/etc/oai/spgw.conf
-RUN sed -i 's/UE_TCP_MSS_CLAMPING                   = "no";/UE_TCP_MSS_CLAMPING                   = "yes";/g' /usr/local/etc/oai/spgw.conf
-RUN sed -i 's/PGW_INTERFACE_NAME_FOR_SGI            = "eth3";/PGW_INTERFACE_NAME_FOR_SGI            = "eth0";/g' /usr/local/etc/oai/spgw.conf
-RUN sed -i 's/SGW_INTERFACE_NAME_FOR_S11              = "lo";/SGW_INTERFACE_NAME_FOR_S11              = "eth0";/g' /usr/local/etc/oai/spgw.conf
-RUN sed -i 's/SGW_IPV4_ADDRESS_FOR_S11                = "127.0.11.2\/8";/SGW_IPV4_ADDRESS_FOR_S11                = "192.188.2.5\/24";/g' /usr/local/etc/oai/spgw.conf
-RUN sed -i 's/SGW_IPV4_ADDRESS_FOR_S1U_S12_S4_UP      = "192.168.11.17\/24";/SGW_IPV4_ADDRESS_FOR_S1U_S12_S4_UP      = "192.188.2.5\/24";/g' /usr/local/etc/oai/spgw.conf
+RUN sed -i 's/PGW_MASQUERADE_SGI[ \t]*=[ \t]*"no";/PGW_MASQUERADE_SGI                    = "yes";/g' /usr/local/etc/oai/spgw.conf
+RUN sed -i 's/UE_TCP_MSS_CLAMPING[ \t]*=[ \t]*"no";/UE_TCP_MSS_CLAMPING                   = "yes";/g' /usr/local/etc/oai/spgw.conf
+RUN sed -i 's/PGW_INTERFACE_NAME_FOR_SGI[ \t]*=[ \t]*"eth3";/PGW_INTERFACE_NAME_FOR_SGI            = "eth0";/g' /usr/local/etc/oai/spgw.conf
+RUN sed -i 's/SGW_INTERFACE_NAME_FOR_S11[ \t]*=[ \t]*"lo";/SGW_INTERFACE_NAME_FOR_S11              = "eth0";/g' /usr/local/etc/oai/spgw.conf
+RUN sed -i 's/SGW_IPV4_ADDRESS_FOR_S11[ \t]*=[ \t]*"127.0.11.2\/8";/SGW_IPV4_ADDRESS_FOR_S11                = "192.188.2.5\/24";/g' /usr/local/etc/oai/spgw.conf
+RUN sed -i 's/SGW_IPV4_ADDRESS_FOR_S1U_S12_S4_UP[ \t]*=[ \t]*"192.168.11.17\/24";/SGW_IPV4_ADDRESS_FOR_S1U_S12_S4_UP      = "192.188.2.5\/24";/g' /usr/local/etc/oai/spgw.conf
 
 #fix spgw bugs which must restart spgw
 RUN echo "#!/bin/bash" > spgw.sh
