@@ -64,11 +64,11 @@ Step 4. Activate the virtual nics in each container. Set the ip address then run
 \#  sh hss.sh  
 //mme  
 \#  ip link set eth0 up  
-\#  ifconfig eth0 192.188.2.4  
-\#  sh hss.sh  
-//hss  
+\#  ifconfig eth0 192.188.2.2  
+\#  sh mme.sh  
+//spgw  
 \#  ip link set eth0 up  
-\#  ifconfig eth0 192.188.2.4  
+\#  ifconfig eth0 192.188.2.5  
 \#  ip link set eth1 up  
 \#  ifconfig eth0 [IP address to Internet]  
-\#  sh hss.sh  
+\#  sh spgw.sh  
