@@ -1,0 +1,7 @@
+FROM ubuntu:16.04
+MAINTAINER universeking rexlin2012001@gmail.com
+
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install -y sudo git wget vim net-tools iputils-ping lsb curl unzip subversion 
+
+
