@@ -1,0 +1,20 @@
+FROM ubuntu:16.04
+MAINTAINER universeking rexlin2012001@gmail.com
+
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install -y sudo git wget vim net-tools iputils-ping lsb curl unzip subversion subversion git vim cmake
+RUN echo -n | openssl s_client -showcerts -connect gitlab.eurecom.fr:443 2>/dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-certificates.crt
+RUN git config --global http.sslverify false
+RUN git clone https://gitlab.eurecom.fr/oai/openairinterface5g.git
+RUN source /openairinterface5g/oaienv
+RUN /openairinterface5g/cmake_targets/build_oai -I 
+
+RUN sed -i 's/"10.0.1.2"/"192.188.2.2"/g' ~/openairinterface5g/targets/PROJECTS/GENERIC-LTE-EPC/CONF/enb.band7.generic.oaisim.local_mme.conf
+RUN sed -i 's/10.0.1.1/192.188.2.10/g' ~/openairinterface5g/targets/PROJECTS/GENERIC-LTE-EPC/CONF/enb.band7.generic.oaisim.local_mme.conf
+
+/openairinterface5g/cmake_targets/build_oai -x -c --oaisim --UE
+sudo -E /openairinterface5g/cmake_targets/tools/run_enb_ue_virt_s1
+
+
+
+

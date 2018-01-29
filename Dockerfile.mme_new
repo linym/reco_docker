@@ -46,7 +46,6 @@ RUN make check
 RUN sudo make install
 RUN sudo ldconfig
 
-
 #compile mme
 RUN /RECO/SCRIPTS/build_mme -c
 
@@ -66,6 +65,11 @@ RUN sed -i 's/MME_INTERFACE_NAME_FOR_S11_MME        = "ens37";/MME_INTERFACE_NAM
 RUN sed -i 's/MME_IPV4_ADDRESS_FOR_S11_MME          = "10.0.0.2\/8";/MME_IPV4_ADDRESS_FOR_S11_MME          = "192.188.2.2\/24";/g' /usr/local/etc/oai/mme.conf
 RUN sed -i 's/SGW_IPV4_ADDRESS_FOR_S11="10.0.0.3\/8";/SGW_IPV4_ADDRESS_FOR_S11="192.188.2.5\/24";/g' /usr/local/etc/oai/mme.conf
 RUN sed -i 's/ConnectPeer= "hss.openair4G.eur" { ConnectTo = "127.0.0.1";/ConnectPeer= "hss.openair4G.eur" { ConnectTo = "192.188.2.4";/g' /usr/local/etc/oai/freeDiameter/mme_fd.conf
+
+#change server ip address
+RUN sed -i 's/grpc::CreateChannel("192.168.75.141:5000"/grpc::CreateChannel("192.188.2.6:5000"/g' /RECO/SRC/MME_APP/mme_app_main.cpp
+RUN /RECO/SCRIPTS/build_mme
+RUN sed -i 's/, "LOCATION" //g' /usr/local/etc/oai/mme.conf
 
 CMD ["sh", "mme.sh"]
 
