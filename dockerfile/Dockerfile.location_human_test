@@ -1,0 +1,50 @@
+FROM ubuntu:16.04
+MAINTAINER universeking rexlin2012001@gmail.com
+
+
+RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get install -y sudo git wget vim
+RUN apt-get install -y cmake g++
+COPY ./LOCATION/location_human /location_human
+
+
+# install grpc and protobuf
+
+RUN apt-get install -y build-essential autoconf libtool
+RUN apt-get install -y libgflags-dev libgtest-dev clang libc++-dev
+RUN apt-get install -y curl
+RUN git clone -b $(curl -L https://grpc.io/release) https://github.com/grpc/grpc
+WORKDIR grpc
+RUN git submodule update --init
+RUN make
+RUN make install
+
+# install protobuf
+WORKDIR /
+RUN sudo apt-get install -y autoconf automake libtool curl make g++ unzip
+RUN git clone https://github.com/google/protobuf.git
+WORKDIR protobuf
+RUN ./autogen.sh
+RUN ./configure
+RUN make
+RUN make check
+RUN sudo make install
+RUN sudo ldconfig
+
+# install freediameter
+WORKDIR /
+RUN sudo apt-get install -y mercurial cmake make gcc g++ bison flex libsctp-dev libgnutls-dev libgcrypt-dev libidn11-dev libpq-dev
+RUN hg clone http://www.freediameter.net/hg/freeDiameter
+RUN mkdir fDbuild
+WORKDIR /fDbuild
+RUN cmake ../freeDiameter && make edit_cache && make && make install
+
+
+
+
+
+
+COPY ./LOCATION /LOCATION
+RUN sed -i 's/\/home\/oai-epc\/Downloads\/location_new/\/LOCATION\/location_human/g' /LOCATION/location_human/CMakeCache.txt
+
+WORKDIR /LOCATION/location_human

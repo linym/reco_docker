@@ -1,0 +1,14 @@
+version: '3'
+services:
+  hss:
+    #build:
+     # context: ./dockerfile
+      #dockerfile: Dockerfile.hss
+    image: universeking/reco_hss
+    network: oainet
+  spgw:
+    image: universeking/reco_spgw
+    depends_on:
+      - hss
+    cap_add:
+      - ALL 
