@@ -45,9 +45,10 @@ $ sudo docker network create --driver=bridge --subnet=192.188.2.0/24 --gateway=1
 
 Step 4. Run the docker image. Mme, hss and spgw will start to execute. Note that hss must start before mme.
 $ sudo docker run --ip=192.188.2.4 --net=reconet -h ubuntu universeking/reco_hss
-$ sudo docker run --ip=192.188.2.2 --net=reconet -h ubuntu universeking/reco_mme_new
-$ sudo docker run --ip=192.188.2.6 --net=reconet -h mme3 universeking/reco_location_human
+$ sudo docker run --ip=192.188.2.2 --net=reconet -h ubuntu universeking/reco_mme
+$ sudo docker run --ip=192.188.2.6 --net=reconet -h mme3 universeking/reco_location
 $ sudo docker run --privileged -v /lib/modules:/lib/modules --ip=192.188.2.5 --net=reconet universeking/reco_spgw
+$ sudo docker run --ip=192.188.2.11 --net=reconet -h ubuntu universeking/reco_mysql
 
 Step 5. Run oaisim
 $ sudo -E ~/openairinterface5g/cmake_targets/tools/run_enb_ue_virt_s1
@@ -56,7 +57,7 @@ $ sudo -E ~/openairinterface5g/cmake_targets/tools/run_enb_ue_virt_s1
 Step 3. Run the docker image in bash.
 $ sudo docker run -it --net=none -h ubuntu --cap-add all universeking/reco_hss /bin/bash
 $ sudo docker run -it --net=none -h ubuntu --privileged universeking/reco_mme /bin/bash
-$ sudo docker run -it --net=none -h mme3 --privileged universeking/reco_location_human /bin/bash
+$ sudo docker run -it --net=none -h mme3 --privileged universeking/reco_location /bin/bash
 $ sudo docker run -it --net=none -h ubuntu --privileged -v /lib/modules:/lib/modules universeking/reco_spgw /bin/bash
 $ sudo docker run -it --net=none -h ubuntu --cap-add all --env="MYSQL_ROOT_PASSWORD=123" universeking/mysql /bin/bash
 
@@ -68,10 +69,10 @@ $ sudo ip link add eth0 link [NIC] type macvtap mode bridge
 $ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_hss") print $1;}')) eth0
 
 $ sudo ip link add eth0 link [NIC] type macvtap mode bridge
-$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_mme_new") print $1;}')) eth0
+$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_mme") print $1;}')) eth0
 
 $ sudo ip link add eth0 link [NIC] type macvtap mode bridge
-$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_location_human") print $1;}')) eth0
+$ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_location") print $1;}')) eth0
 
 $ sudo ip link add eth0 link [NIC] type macvtap mode bridge
 $ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_spgw") print $1;}')) eth0
@@ -79,12 +80,11 @@ $ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docke
 Step 5. Create virtual network interface for Internet in spgw. The nic which is connecting to Internet should replace [NIC]. (eg. enp5s0)
 $ sudo ip link add eth1 link [NIC] type macvtap mode bridge
 $ sudo ip link set netns $(docker inspect --format '{{.State.Pid}}' $(sudo docker ps | awk '{if ($2 == "universeking/reco_spgw") print $1;}')) eth1
-$ sed -i 's/PGW_INTERFACE_NAME_FOR_SGI            = "eth0";/PGW_INTERFACE_NAME_FOR_SGI            = "eth1";/g' /usr/local/etc/oai/spgw.conf
 
 
 
 Step 6. Activate the virtual nics in each container. Set the ip address then run the starting script. Note that HSS must start before MME.
-/# sh network.sh
+\#  sh network.sh
 
 //hss
 \#  ip link set eth0 up
@@ -103,6 +103,7 @@ Step 6. Activate the virtual nics in each container. Set the ip address then run
 \#  ifconfig eth0 192.188.2.5
 \#  ip link set eth1 up
 \#  ifconfig eth1 [IP address to Internet]
+\#  sed -i 's/PGW_INTERFACE_NAME_FOR_SGI            = "eth0";/PGW_INTERFACE_NAME_FOR_SGI            = "eth1";/g' /usr/local/etc/oai/spgw.conf
 \#  sh spgw.sh
 //mysql
 \#  ip link set eth0 up

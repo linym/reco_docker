@@ -1,14 +1,80 @@
 version: '3'
 services:
   hss:
-    #build:
-     # context: ./dockerfile
-      #dockerfile: Dockerfile.hss
     image: universeking/reco_hss
-    network: oainet
+    cap_add:
+      - ALL
+    hostname: ubuntu
+    command: /bin/bash -c "sleep 5;sh hss.sh;"
+    networks:
+      myvlan:
+        ipv4_address: 192.188.2.4 
+
+  mme:
+    image: universeking/reco_mme
+    cap_add:
+      - ALL
+    command: /bin/bash -c "sleep 20;sh mme.sh;"
+    hostname: ubuntu
+    networks:
+      myvlan:
+        ipv4_address: 192.188.2.2
+
+  location:
+    image: universeking/reco_location
+    cap_add:
+      - ALL
+    command: /bin/bash -c "sleep 20;sh mme.sh;"
+    hostname: mme3
+    networks:
+      myvlan:
+        ipv4_address: 192.188.2.6
+
   spgw:
     image: universeking/reco_spgw
-    depends_on:
-      - hss
     cap_add:
-      - ALL 
+      - ALL
+    command: /bin/bash -c "sleep 25;sh network.sh;sh spgw.sh;"
+    volumes:
+      - "/lib/modules:/lib/modules"
+    hostname: ubuntu
+    networks:
+      myvlan:
+        ipv4_address: 192.188.2.5
+      myvwan:
+        ipv4_address: 140.113.216.45
+
+  mysql:
+    image: universeking/mysql
+#    cap_add:
+#      - ALL
+    command: /bin/bash -c "sleep 35;sh mysql.sh;"
+#    hostname: ubuntu
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+    networks:
+      myvlan:
+        ipv4_address: 192.188.2.11
+
+networks:
+  private:
+  myvlan:
+    driver: macvlan
+    driver_opts:
+      parent: enp2s0
+    ipam:
+      config:
+        - subnet: 192.188.2.0/24
+
+  myvwan:
+    driver: macvlan
+    driver_opts:
+      parent: enp4s0
+    ipam:
+      config:
+        - subnet: 140.113.216.0/24
+
+
+
+
+
